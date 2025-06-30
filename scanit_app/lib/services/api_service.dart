@@ -207,15 +207,22 @@ class ApiService {
   static Future<Map<String, dynamic>> autoWasteItem(String itemId) async {
     final token = await getToken();
     final response = await http.post(
-      Uri.parse('$baseUrl/scan/auto-waste'),
+      Uri.parse('$baseUrl/api/items/auto-waste/$itemId'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
       body: jsonEncode({'itemId': itemId}),
     );
+    print("Auto-waste response status: ${response.statusCode}");
+    print("Auto-waste response body: ${response.body}");
 
-    return jsonDecode(response.body);
+    try {
+      return jsonDecode(response.body);
+    } catch (e) {
+      print("Failed to decode auto-waste response: $e");
+      return { 'success': false, 'message': 'Invalid response from server' };
+    }
   }
 
 

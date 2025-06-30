@@ -37,10 +37,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> loadEmailAndItems() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
-    debugPrint('📦 Fetched token: $token');
+    debugPrint('Fetched token: $token');
 
     if (token == null || JwtDecoder.isExpired(token)) {
-      debugPrint('❌ Token missing or expired. Redirecting to login...');
+      debugPrint('Token missing or expired. Redirecting to login...');
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const LoginScreen()),
@@ -76,45 +76,44 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         }
 
-        if (daysLeft < 0) {
-          Future.delayed(Duration(milliseconds: 300 * i), () {
-            showDialog(
-              context: context,
-              builder: (_) => AlertDialog(
-                title: Text("Item Expired: ${item['name']}"),
-                content: const Text("Would you like to add this to your grocery list?"),
-                actions: [
-                  TextButton(
-                    onPressed: () async {
-                      Navigator.pop(context);
-                      await ApiService.autoWasteItem(item['_id']);
-                      await loadEmailAndItems();
-                    },
-                    child: const Text("No"),
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      Navigator.pop(context);
-                      final result = await ApiService.addGroceryItemAutoSuggest(item['name']);
-                      if (result['success'] == true) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("${item['name']} added to grocery list")),
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(result['message'] ?? 'Failed to add')),
-                        );
-                      }
-                      await ApiService.autoWasteItem(item['_id']);
-                      await loadEmailAndItems();
-                    },
-                    child: const Text("Yes"),
-                  ),
-                ],
-              ),
-            );
-          });
+        if (daysLeft < 0 && !(item['status'] == 'wasted')) {
+          final res = await ApiService.autoWasteItem(item['_id']);
+
+          if (res['success'] == true) {
+            Future.delayed(Duration(milliseconds: 300 * i), () {
+              showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  title: Text("Item Expired: ${item['name']}"),
+                  content: const Text("Would you like to add this to your grocery list?"),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text("No"),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        Navigator.pop(context);
+                        final result = await ApiService.addGroceryItemAutoSuggest(item['name']);
+                        if (result['success'] == true) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("${item['name']} added to grocery list")),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(result['message'] ?? 'Failed to add')),
+                          );
+                        }
+                      },
+                      child: const Text("Yes"),
+                    ),
+                  ],
+                ),
+              );
+            });
+          }
         }
+
 
       }
     } catch (e) {
