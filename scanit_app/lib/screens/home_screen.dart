@@ -4,13 +4,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import '../services/api_service.dart';
 import '../services/notification_service.dart';
-import '../theme/theme_provider.dart';
+import '../providers/theme_provider.dart';
 import 'grocery_list_screen.dart';
 import 'login_screen.dart';
 import 'recipe_screen.dart';
 import 'scan_screen.dart';
 import 'used_wasted_screen.dart';
 import 'stats_screen.dart';
+import 'ai_chat_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -463,6 +464,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
+            ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AiChatScreen()),
+                );
+              },
+              backgroundColor: Colors.deepPurple,
+              tooltip: "Ask Kitchen Assistant",
+              child: const Icon(Icons.chat),
             ),
     );
   }
