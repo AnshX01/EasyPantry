@@ -50,45 +50,92 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgColor = isDark ? Colors.black : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black;
+    final borderColor = isDark ? Colors.white24 : Colors.black26;
+
     return Scaffold(
+      backgroundColor: bgColor,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Form(
             key: _formKey,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text("Login to ScanIt", style: TextStyle(fontSize: 28)),
+                Text(
+                  "Login to ScanIt",
+                  style: TextStyle(fontSize: 28, color: textColor, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
                 const SizedBox(height: 30),
                 TextFormField(
                   controller: emailController,
-                  decoration: const InputDecoration(labelText: "Email"),
-                  validator: (val) => val == null || !val.contains('@')
-                      ? 'Invalid email'
-                      : null,
+                  style: TextStyle(color: textColor),
+                  decoration: InputDecoration(
+                    labelText: "Email",
+                    labelStyle: TextStyle(color: textColor),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: borderColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textColor),
+                    ),
+                  ),
+                  validator: (val) =>
+                      val == null || !val.contains('@') ? 'Invalid email' : null,
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: passwordController,
                   obscureText: true,
-                  decoration: const InputDecoration(labelText: "Password"),
+                  style: TextStyle(color: textColor),
+                  decoration: InputDecoration(
+                    labelText: "Password",
+                    labelStyle: TextStyle(color: textColor),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: borderColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textColor),
+                    ),
+                  ),
                   validator: (val) =>
                       val == null || val.length < 6 ? 'Min 6 characters' : null,
                 ),
                 const SizedBox(height: 30),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: textColor,
+                    foregroundColor: bgColor,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
                   onPressed: isLoading ? null : handleLogin,
                   child: isLoading
-                      ? const CircularProgressIndicator()
-                      : const Text("Login"),
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text("Login", style: TextStyle(fontSize: 16)),
                 ),
                 const SizedBox(height: 10),
                 TextButton(
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const RegisterScreen()),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const RegisterScreen()),
+                    );
+                  },
+                  child: Text(
+                    "Don't have an account? Register here",
+                    style: TextStyle(color: textColor),
                   ),
-                  child: const Text("Don't have an account? Register here"),
                 ),
               ],
             ),

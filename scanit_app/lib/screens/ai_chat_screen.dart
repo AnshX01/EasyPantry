@@ -99,7 +99,7 @@ class _AiChatScreenState extends State<AiChatScreen> {
   @override
   Widget build(BuildContext context) {
     chatProvider = Provider.of<ChatProvider>(context);
-    final _messages = chatProvider.messages;
+    final messages = chatProvider.messages;
     return Scaffold(
       appBar: AppBar(title: const Text("Kitchen Assistant AI")),
       body: Column(
@@ -107,8 +107,8 @@ class _AiChatScreenState extends State<AiChatScreen> {
           Expanded(
             child: ListView.builder(
               reverse: false,
-              itemCount: _messages.length,
-              itemBuilder: (context, index) => buildMessage(_messages[index]),
+              itemCount: messages.length,
+              itemBuilder: (context, index) => buildMessage(messages[index]),
             ),
           ),
           if (isLoading) const LinearProgressIndicator(),

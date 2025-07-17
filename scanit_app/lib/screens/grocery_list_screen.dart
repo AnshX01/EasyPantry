@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/grocery_item.dart';
+import '../providers/theme_provider.dart';
 import '../services/api_service.dart';
-import '../widgets/main_scaffold.dart';
 
 class GroceryListScreen extends StatefulWidget {
   const GroceryListScreen({super.key});
@@ -53,22 +54,45 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     final editNameController = TextEditingController(text: item.name);
     final editQuantityController = TextEditingController(text: item.quantity.toString());
     final editUnitController = TextEditingController(text: item.unit);
+    final isDark = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
 
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
+        backgroundColor: isDark ? Colors.black : Colors.white,
+        titleTextStyle: TextStyle(
+          color: isDark ? Colors.white : Colors.black,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
         title: const Text("Edit Item"),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(controller: editNameController, decoration: const InputDecoration(labelText: 'Name')),
-            TextField(controller: editQuantityController, decoration: const InputDecoration(labelText: 'Quantity'), keyboardType: TextInputType.number),
-            TextField(controller: editUnitController, decoration: const InputDecoration(labelText: 'Unit')),
+            TextField(
+              controller: editNameController,
+              decoration: const InputDecoration(labelText: 'Name'),
+              style: TextStyle(color: isDark ? Colors.white : Colors.black),
+            ),
+            TextField(
+              controller: editQuantityController,
+              decoration: const InputDecoration(labelText: 'Quantity'),
+              keyboardType: TextInputType.number,
+              style: TextStyle(color: isDark ? Colors.white : Colors.black),
+            ),
+            TextField(
+              controller: editUnitController,
+              decoration: const InputDecoration(labelText: 'Unit'),
+              style: TextStyle(color: isDark ? Colors.white : Colors.black),
+            ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
-          ElevatedButton(
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Cancel", style: TextStyle(color: isDark ? Colors.white : Colors.black)),
+          ),
+          TextButton(
             onPressed: () async {
               final updatedName = editNameController.text.trim();
               final updatedQuantity = int.tryParse(editQuantityController.text.trim()) ?? 1;
@@ -80,48 +104,79 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
               Navigator.pop(context);
               loadGroceryItems();
             },
-            child: const Text("Save"),
+            child: Text("Save", style: TextStyle(color: isDark ? Colors.white : Colors.black)),
           ),
         ],
       ),
     );
   }
 
-  Future<void> markAsPurchased(String id) async {
-    await deleteItem(id);
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Marked as purchased")));
-  }
-
   void showAddDialog() {
     nameController.clear();
     quantityController.clear();
     unitController.clear();
+    final isDark = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
 
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
+        backgroundColor: isDark ? Colors.black : Colors.white,
+        titleTextStyle: TextStyle(
+          color: isDark ? Colors.white : Colors.black,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
         title: const Text("Add Grocery Item"),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextField(controller: nameController, decoration: const InputDecoration(labelText: 'Item name')),
-            TextField(controller: quantityController, decoration: const InputDecoration(labelText: 'Quantity'), keyboardType: TextInputType.number),
-            TextField(controller: unitController, decoration: const InputDecoration(labelText: 'Unit')),
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(labelText: 'Item name'),
+              style: TextStyle(color: isDark ? Colors.white : Colors.black),
+            ),
+            TextField(
+              controller: quantityController,
+              decoration: const InputDecoration(labelText: 'Quantity'),
+              keyboardType: TextInputType.number,
+              style: TextStyle(color: isDark ? Colors.white : Colors.black),
+            ),
+            TextField(
+              controller: unitController,
+              decoration: const InputDecoration(labelText: 'Unit'),
+              style: TextStyle(color: isDark ? Colors.white : Colors.black),
+            ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
-          ElevatedButton(onPressed: () {
-            Navigator.pop(context);
-            addItem();
-          }, child: const Text("Add")),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Cancel", style: TextStyle(color: isDark ? Colors.white : Colors.black)),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              addItem();
+            },
+            child: Text("Add", style: TextStyle(color: isDark ? Colors.white : Colors.black)),
+          ),
         ],
       ),
     );
   }
 
+  
+  Future<void> markAsPurchased(String id) async {
+      await deleteItem(id);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Marked as purchased")));
+    }
   @override
   Widget build(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
+    final bgColor = isDark ? Colors.black : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black;
+    final borderColor = isDark ? Colors.white : Colors.black;
+
     return Column(
       children: [
         Padding(
@@ -129,9 +184,12 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text("Your Items", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+              Text(
+                "Your Items",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: textColor),
+              ),
               IconButton(
-                icon: const Icon(Icons.add),
+                icon: Icon(Icons.add, color: textColor),
                 onPressed: showAddDialog,
               ),
             ],
@@ -139,7 +197,9 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
         ),
         Expanded(
           child: groceryItems.isEmpty
-              ? const Center(child: Text("No items in the grocery list."))
+              ? Center(
+                  child: Text("No items in the grocery list.", style: TextStyle(color: textColor)),
+                )
               : ListView.builder(
                   controller: _scrollController,
                   itemCount: groceryItems.length,
@@ -168,11 +228,19 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
                         return false;
                       },
                       child: Card(
+                        color: bgColor,
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(color: borderColor),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         child: ListTile(
-                          title: Text('${item.name} - ${item.quantity} ${item.unit}'),
+                          title: Text(
+                            '${item.name} - ${item.quantity} ${item.unit}',
+                            style: TextStyle(color: textColor),
+                          ),
                           trailing: IconButton(
-                            icon: const Icon(Icons.edit, color: Colors.blue),
+                            icon: Icon(Icons.edit, color: textColor),
                             onPressed: () => showEditDialog(item),
                           ),
                         ),
@@ -183,6 +251,5 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
         ),
       ],
     );
-
   }
 }

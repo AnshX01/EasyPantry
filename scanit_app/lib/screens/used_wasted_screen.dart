@@ -62,11 +62,19 @@ class _UsedWastedScreenState extends State<UsedWastedScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Item History"),
-          bottom: const TabBar(tabs: [
-            Tab(text: "Used"),
-            Tab(text: "Wasted"),
-          ]),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          foregroundColor: Theme.of(context).textTheme.bodyLarge?.color,
+          bottom: TabBar(
+            labelColor: Theme.of(context).textTheme.bodyLarge?.color,
+            unselectedLabelColor: Colors.grey,
+            indicatorColor: Theme.of(context).textTheme.bodyLarge?.color,
+            tabs: const [
+              Tab(text: "Used"),
+              Tab(text: "Wasted"),
+            ],
+          ),
         ),
+
         body: isLoading
             ? const Center(child: CircularProgressIndicator())
             : TabBarView(children: [

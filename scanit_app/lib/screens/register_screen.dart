@@ -26,58 +26,128 @@ class _RegisterScreenState extends State<RegisterScreen> {
       passwordController.text,
     );
     setState(() => isLoading = false);
+
     if (response['success'] == true) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Registration successful. Please login.")),
+        SnackBar(
+          content: const Text("Registration successful. Please login."),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+        ),
       );
       Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
-    );
+        context,
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(response['message'] ?? 'Registration failed')),
+        SnackBar(
+          content: Text(response['message'] ?? 'Registration failed'),
+          backgroundColor: Colors.redAccent,
+        ),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? Colors.white : Colors.black;
+
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Form(
             key: _formKey,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text("Register on ScanIt", style: TextStyle(fontSize: 28)),
+                Text(
+                  "Register on ScanIt",
+                  style: TextStyle(fontSize: 28, color: textColor, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
                 const SizedBox(height: 30),
+
                 TextField(
                   controller: nameController,
-                  decoration: const InputDecoration(labelText: "Name"),
+                  style: TextStyle(color: textColor),
+                  decoration: InputDecoration(
+                    labelText: "Name",
+                    labelStyle: TextStyle(color: textColor),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textColor.withOpacity(0.5)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textColor),
+                    ),
+                  ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
+
                 TextFormField(
                   controller: emailController,
-                  decoration: const InputDecoration(labelText: "Email"),
+                  style: TextStyle(color: textColor),
+                  decoration: InputDecoration(
+                    labelText: "Email",
+                    labelStyle: TextStyle(color: textColor),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textColor.withOpacity(0.5)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textColor),
+                    ),
+                  ),
                   validator: (val) =>
                       val == null || !val.contains('@') ? 'Invalid email' : null,
                 ),
                 const SizedBox(height: 20),
+
                 TextFormField(
                   controller: passwordController,
                   obscureText: true,
-                  decoration: const InputDecoration(labelText: "Password"),
+                  style: TextStyle(color: textColor),
+                  decoration: InputDecoration(
+                    labelText: "Password",
+                    labelStyle: TextStyle(color: textColor),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textColor.withOpacity(0.5)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textColor),
+                    ),
+                  ),
                   validator: (val) =>
                       val == null || val.length < 6 ? 'Min 6 characters' : null,
                 ),
                 const SizedBox(height: 30),
+
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: textColor,
+                    foregroundColor: isDark ? Colors.black : Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
                   onPressed: isLoading ? null : handleRegister,
                   child: isLoading
-                      ? const CircularProgressIndicator()
+                      ? CircularProgressIndicator(color: isDark ? Colors.black : Colors.white)
                       : const Text("Register"),
+                ),
+                const SizedBox(height: 10),
+
+                TextButton(
+                  onPressed: () => Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const LoginScreen()),
+                  ),
+                  child: Text(
+                    "Already have an account? Login here",
+                    style: TextStyle(color: textColor),
+                  ),
                 ),
               ],
             ),

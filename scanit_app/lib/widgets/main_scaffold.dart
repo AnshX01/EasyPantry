@@ -22,31 +22,41 @@ class MainScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
+
     return Scaffold(
       key: scaffoldKey,
+      backgroundColor: isDark ? Colors.black : Colors.white,
+
       appBar: AppBar(
-        title: Text(title, style: Theme.of(context).textTheme.titleLarge),
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () => Scaffold.of(context).openDrawer(),
+        backgroundColor: isDark ? Colors.black : Colors.white,
+        elevation: 0,
+        iconTheme: IconThemeData(color: isDark ? Colors.white : Colors.black),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: isDark ? Colors.white : Colors.black,
           ),
         ),
       ),
+
       drawer: Drawer(
+        backgroundColor: isDark ? Colors.black : Colors.white,
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
+            DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: isDark ? Colors.grey[900] : Colors.grey[200],
               ),
               child: Align(
                 alignment: Alignment.bottomLeft,
                 child: Text(
                   'Welcome back!',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: isDark ? Colors.white : Colors.black,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
@@ -54,10 +64,10 @@ class MainScaffold extends StatelessWidget {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.history),
-              title: const Text("View History"),
+              leading: Icon(Icons.history, color: isDark ? Colors.white : Colors.black),
+              title: Text("View History", style: TextStyle(color: isDark ? Colors.white : Colors.black)),
               onTap: () {
-                Navigator.pop(context); // Close drawer
+                Navigator.pop(context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const UsedWastedScreen()),
@@ -66,8 +76,8 @@ class MainScaffold extends StatelessWidget {
             ),
             Consumer<ThemeProvider>(
               builder: (context, themeProvider, _) => SwitchListTile(
-                secondary: const Icon(Icons.brightness_6),
-                title: const Text("Dark Theme"),
+                secondary: Icon(Icons.brightness_6, color: isDark ? Colors.white : Colors.black),
+                title: Text("Dark Theme", style: TextStyle(color: isDark ? Colors.white : Colors.black)),
                 value: themeProvider.isDarkMode,
                 onChanged: (val) {
                   Navigator.pop(context);
@@ -76,8 +86,8 @@ class MainScaffold extends StatelessWidget {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text("Logout"),
+              leading: Icon(Icons.logout, color: isDark ? Colors.white : Colors.black),
+              title: Text("Logout", style: TextStyle(color: isDark ? Colors.white : Colors.black)),
               onTap: () async {
                 await ApiService.logout();
                 Navigator.pushAndRemoveUntil(
@@ -92,8 +102,12 @@ class MainScaffold extends StatelessWidget {
       ),
 
       body: body,
+
       bottomNavigationBar: bottomNavigation,
+
       floatingActionButton: FloatingActionButton(
+        backgroundColor: isDark ? Colors.white : Colors.black,
+        foregroundColor: isDark ? Colors.black : Colors.white,
         tooltip: "Ask Assistant",
         child: const Icon(Icons.smart_toy_rounded),
         onPressed: () {

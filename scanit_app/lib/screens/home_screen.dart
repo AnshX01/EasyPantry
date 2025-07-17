@@ -115,58 +115,122 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void showAddItemDialog() {
-    nameController.clear();
-    quantityController.clear();
-    expiryController.clear();
+  nameController.clear();
+  quantityController.clear();
+  expiryController.clear();
+  showItemDialog(isEdit: false);
+}
+
+void showEditItemDialog(Map<String, dynamic> item) {
+  nameController.text = item['name'];
+  quantityController.text = item['quantity'].toString();
+  expiryController.text = item['expiryDate'] ?? '';
+  showItemDialog(isEdit: true, itemId: item['_id']);
+}
+
+void showItemDialog({required bool isEdit, String? itemId}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? Colors.white : Colors.black;
 
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text("Add Item"),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Text(isEdit ? "Edit Item" : "Add Item", style: TextStyle(color: textColor)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
-                controller: nameController,
-                decoration: const InputDecoration(labelText: "Item Name")),
+              controller: nameController,
+              style: TextStyle(color: textColor),
+              decoration: InputDecoration(
+                labelText: "Item Name",
+                labelStyle: TextStyle(color: textColor),
+                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: textColor.withOpacity(0.5))),
+                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: textColor)),
+              ),
+            ),
+            const SizedBox(height: 10),
             TextField(
               controller: quantityController,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: "Quantity"),
+              style: TextStyle(color: textColor),
+              decoration: InputDecoration(
+                labelText: "Quantity",
+                labelStyle: TextStyle(color: textColor),
+                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: textColor.withOpacity(0.5))),
+                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: textColor)),
+              ),
             ),
+            const SizedBox(height: 10),
             TextField(
               controller: expiryController,
               readOnly: true,
+              style: TextStyle(color: textColor),
               decoration: InputDecoration(
                 labelText: "Expiry Date",
+                labelStyle: TextStyle(color: textColor),
                 suffixIcon: IconButton(
-                  icon: const Icon(Icons.calendar_today),
+                  icon: Icon(Icons.calendar_today, color: textColor),
                   onPressed: () async {
                     final date = await showDatePicker(
                       context: context,
-                      initialDate: DateTime.now(),
+                      initialDate: DateTime.tryParse(expiryController.text) ?? DateTime.now(),
                       firstDate: DateTime.now(),
                       lastDate: DateTime(2100),
                     );
                     if (date != null) {
-                      expiryController.text =
-                          date.toIso8601String().split('T')[0];
+                      expiryController.text = date.toIso8601String().split('T')[0];
                     }
                   },
                 ),
+                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: textColor.withOpacity(0.5))),
+                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: textColor)),
               ),
             ),
           ],
         ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Cancel")),
-          ElevatedButton(onPressed: handleAddItem, child: const Text("Add")),
+            onPressed: () => Navigator.pop(context),
+            child: Text("Cancel", style: TextStyle(color: textColor)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: textColor,
+              foregroundColor: isDark ? Colors.black : Colors.white,
+            ),
+            onPressed: () => isEdit ? handleUpdateItem(itemId!) : handleAddItem(),
+            child: Text(isEdit ? "Save" : "Add"),
+          ),
         ],
       ),
     );
   }
+
+  Future<void> handleUpdateItem(String id) async {
+    final name = nameController.text.trim();
+    final quantity = int.tryParse(quantityController.text.trim()) ?? 0;
+    final expiry = expiryController.text.trim();
+
+    if (name.isEmpty || quantity <= 0 || expiry.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Invalid input")));
+      return;
+    }
+
+    final result = await ApiService.updateItem(
+      id: id,
+      quantity: quantity,
+      expiryDate: expiry,
+    );
+
+    Navigator.pop(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(result['success'] == true ? "Updated" : "Update failed")),
+    );
+    await loadEmailAndItems();
+  }
+
 
   Future<void> handleAddItem() async {
     final name = nameController.text.trim();
@@ -273,6 +337,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           leading: Icon(Icons.inventory, color: color),
                           title: Text(item['name']),
                           subtitle: Text("Qty: ${item['quantity']} • Expires in $daysLeft days"),
+                          trailing: IconButton(
+                            icon: Icon(Icons.edit, color: color),
+                            onPressed: () => showEditItemDialog(item),
+                          ),
                         ),
                       ),
                     );
@@ -298,30 +366,35 @@ class _HomeScreenState extends State<HomeScreen> {
       FutureBuilder(
         future: ApiService.fetchRecipes(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData)
+          if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
+          }
           return RecipeScreen(recipes: snapshot.data!['recipes']);
         },
       )
     ];
 
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
+
     return MainScaffold(
       title: "ScanIt",
       body: pages[_selectedIndex],
       bottomNavigation: BottomNavigationBar(
+        backgroundColor: isDark ? Colors.black : Colors.white,
         currentIndex: _selectedIndex,
         onTap: onBottomNavTap,
-        selectedItemColor: Colors.deepPurple,
-        unselectedItemColor: Colors.grey,
+        selectedItemColor: isDark ? Colors.white : Colors.black,
+        unselectedItemColor: isDark ? Colors.grey[600] : Colors.grey[700],
+        type: BottomNavigationBarType.fixed,
+        showUnselectedLabels: true,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart), label: "Grocery"),
+          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: "Grocery"),
           BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: "Stats"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.restaurant_menu), label: "Recipes"),
+          BottomNavigationBarItem(icon: Icon(Icons.restaurant_menu), label: "Recipes"),
         ],
       ),
     );
+
   }
 }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../providers/theme_provider.dart';
 
 class RecipeScreen extends StatefulWidget {
   final List<dynamic> recipes;
@@ -42,6 +45,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Suggested Recipes'),
@@ -53,18 +57,18 @@ class _RecipeScreenState extends State<RecipeScreen> {
               onChanged: updateSearch,
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
-                hintText: 'Search recipes...',
-                hintStyle: const TextStyle(color: Colors.white54),
+                hintText: 'Search recipes',
+                hintStyle: TextStyle(color: isDark ? Colors.white54 : Colors.black54),
                 filled: true,
-                fillColor: Colors.grey[900], // Dark background
-                prefixIcon: const Icon(Icons.search, color: Colors.white),
+                fillColor: isDark ? Colors.black : Colors.white,
+                prefixIcon: Icon(Icons.search, color: isDark ? Colors.white : Colors.black),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(color: Colors.white24),
+                  borderSide: BorderSide(color: isDark ? Colors.white24 : Colors.black54),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: const BorderSide(color: Colors.white),
+                  borderSide: BorderSide(color: isDark ? Colors.white: Colors.black),
                 ),
               ),
             ),
@@ -80,11 +84,6 @@ class _RecipeScreenState extends State<RecipeScreen> {
                 return Card(
                   margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   child: ListTile(
-                    leading: Image.network(
-                      recipe['image'] ?? '',
-                      width: 60,
-                      errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
-                    ),
                     title: Text(recipe['title'] ?? 'Unnamed Recipe'),
                     subtitle: Text('${recipe['usedIngredientCount']} ingredients used'),
                     onTap: () => launchRecipe(recipe['sourceUrl'] ?? ''),
