@@ -17,6 +17,8 @@ app.use("/api/items", require("./routes/items"));
 app.use("/api/scan", require("./routes/scan"));
 app.use("/api/recipes", require("./routes/recipes"));
 app.use('/api/grocery', require('./routes/grocery'));
+app.use("/api/user", require("./routes/user"));
+
 
 
 app.listen(3000, () => console.log("Server running on port 3000"));

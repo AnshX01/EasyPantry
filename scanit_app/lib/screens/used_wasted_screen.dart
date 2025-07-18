@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../services/api_service.dart';
+import '../providers/theme_provider.dart';
 
 class UsedWastedScreen extends StatefulWidget {
   const UsedWastedScreen({super.key});
@@ -30,7 +32,7 @@ class _UsedWastedScreenState extends State<UsedWastedScreen> {
     });
   }
 
-  Widget buildItemCard(item) {
+  Widget buildItemCard(item, bool isDark) {
     final dateAdded = DateTime.tryParse(item['dateAdded'] ?? '');
     final expiryDate = DateTime.tryParse(item['expiryDate'] ?? '');
 
@@ -40,47 +42,72 @@ class _UsedWastedScreenState extends State<UsedWastedScreen> {
     }
 
     return Card(
+      color: isDark ? Colors.black : Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: BorderSide(color: isDark ? Colors.white10 : Colors.black12),
+      ),
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       child: ListTile(
-        title: Text(item['name']),
+        title: Text(
+          item['name'],
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Quantity: ${item['quantity']}"),
-            if (expiryDate != null) Text("Expiry: ${formatDate(expiryDate)}"),
-            if (dateAdded != null) Text("Added on: ${formatDate(dateAdded)}"),
+            Text(
+              "Quantity: ${item['quantity']}",
+              style: TextStyle(color: isDark ? Colors.white70 : Colors.black87),
+            ),
+            if (expiryDate != null)
+              Text(
+                "Expiry: ${formatDate(expiryDate)}",
+                style: TextStyle(color: isDark ? Colors.white70 : Colors.black87),
+              ),
+            if (dateAdded != null)
+              Text(
+                "Added on: ${formatDate(dateAdded)}",
+                style: TextStyle(color: isDark ? Colors.white70 : Colors.black87),
+              ),
           ],
         ),
       ),
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Item History"),
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          foregroundColor: Theme.of(context).textTheme.bodyLarge?.color,
+          foregroundColor: isDark ? Colors.white : Colors.black,
           bottom: TabBar(
-            labelColor: Theme.of(context).textTheme.bodyLarge?.color,
+            labelColor: isDark ? Colors.white : Colors.black,
             unselectedLabelColor: Colors.grey,
-            indicatorColor: Theme.of(context).textTheme.bodyLarge?.color,
+            indicatorColor: isDark ? Colors.white : Colors.black,
             tabs: const [
               Tab(text: "Used"),
               Tab(text: "Wasted"),
             ],
           ),
         ),
-
         body: isLoading
             ? const Center(child: CircularProgressIndicator())
-            : TabBarView(children: [
-                ListView(children: used.map(buildItemCard).toList()),
-                ListView(children: wasted.map(buildItemCard).toList()),
-              ]),
+            : TabBarView(
+                children: [
+                  ListView(children: used.map((item) => buildItemCard(item, isDark)).toList()),
+                  ListView(children: wasted.map((item) => buildItemCard(item, isDark)).toList()),
+                ],
+              ),
       ),
     );
   }

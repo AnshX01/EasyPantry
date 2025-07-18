@@ -265,16 +265,16 @@ void showItemDialog({required bool isEdit, String? itemId}) {
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                Text("Welcome, $email 👋",
+                Text("Welcome $email!",
                     style: const TextStyle(
-                        fontSize: 24, fontWeight: FontWeight.bold)),
+                        fontSize: 24, fontWeight: FontWeight.w400)),
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text("Your Active Ingredients",
                         style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w600)),
+                            fontSize: 18, fontWeight: FontWeight.w300)),
                     IconButton(
                       icon: const Icon(Icons.add),
                       onPressed: showAddItemDialog,

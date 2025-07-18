@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../screens/ai_chat_screen.dart';
 import '../screens/login_screen.dart';
+import '../screens/profile_screen.dart';
 import '../screens/used_wasted_screen.dart';
 import '../services/api_service.dart';
 import '../providers/theme_provider.dart';
@@ -84,6 +85,13 @@ class MainScaffold extends StatelessWidget {
                   themeProvider.toggleTheme();
                 },
               ),
+            ),
+            ListTile(
+              leading: Icon(Icons.person, color: isDark ? Colors.white : Colors.black),
+              title: Text("Profile", style: TextStyle(color: isDark ? Colors.white : Colors.black)),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfileScreen()));
+              },
             ),
             ListTile(
               leading: Icon(Icons.logout, color: isDark ? Colors.white : Colors.black),
