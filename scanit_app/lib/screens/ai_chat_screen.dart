@@ -9,10 +9,7 @@ Future<Map<String, dynamic>> fetchUserData() async {
   final groceryItems = await ApiService.fetchGroceryItems();
   final used = await ApiService.fetchUsedItems();
   final wasted = await ApiService.fetchWastedItems();
-  // print('Active type: ${activeItems.first.runtimeType}');
-  // print('Grocery type: ${groceryItems.first.runtimeType}');
-  // print('Used type: ${used.first.runtimeType}');
-  // print('Wasted type: ${wasted.first.runtimeType}');
+
   return {
     'active': activeItems,
     'grocery': groceryItems,
@@ -78,6 +75,14 @@ class _AiChatScreenState extends State<AiChatScreen> {
 
   Widget buildMessage(Map<String, String> message) {
     final isUser = message['role'] == 'user';
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final userBgColor = isDark ? Colors.grey[800] : Colors.grey[300];
+    final userTextColor = isDark ? Colors.white : Colors.black;
+
+    final aiBgColor = isDark ? Colors.white : Colors.black;
+    final aiTextColor = isDark ? Colors.black : Colors.white;
+
     return Align(
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
@@ -85,23 +90,24 @@ class _AiChatScreenState extends State<AiChatScreen> {
         padding: const EdgeInsets.all(12),
         constraints: const BoxConstraints(maxWidth: 300),
         decoration: BoxDecoration(
-          color: isUser ? Colors.blueAccent : Colors.grey[300],
+          color: isUser ? userBgColor : aiBgColor,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Text(
           message['text'] ?? '',
-          style: TextStyle(color: isUser ? Colors.white : Colors.black),
+          style: TextStyle(color: isUser ? userTextColor : aiTextColor),
         ),
       ),
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
     chatProvider = Provider.of<ChatProvider>(context);
     final messages = chatProvider.messages;
     return Scaffold(
-      appBar: AppBar(title: const Text("Kitchen Assistant AI")),
+      appBar: AppBar(title: const Text("ScanIt AI")),
       body: Column(
         children: [
           Expanded(

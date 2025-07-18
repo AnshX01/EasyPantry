@@ -13,6 +13,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
   bool isLoading = false;
   final _formKey = GlobalKey<FormState>();
 
@@ -47,6 +48,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
     }
   }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -121,6 +132,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   validator: (val) =>
                       val == null || val.length < 6 ? 'Min 6 characters' : null,
                 ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: confirmPasswordController,
+                  obscureText: true,
+                  style: TextStyle(color: textColor),
+                  decoration: InputDecoration(
+                    labelText: "Confirm Password",
+                    labelStyle: TextStyle(color: textColor),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textColor.withOpacity(0.5)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: textColor),
+                    ),
+                  ),
+                  validator: (val) {
+                    if (val == null || val.isEmpty) return 'Please confirm your password';
+                    if (val != passwordController.text) return 'Passwords do not match';
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 30),
+
                 const SizedBox(height: 30),
 
                 ElevatedButton(
