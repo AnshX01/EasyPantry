@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scanit_app/providers/bookmark_provider.dart';
 import 'providers/chat_provider.dart';
 import 'services/notification_service.dart';
 import 'screens/splash_screen.dart';
@@ -14,6 +15,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => ChatProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => BookmarkProvider()),
       ],
       child: const MyApp(),
     ),

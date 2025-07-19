@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../providers/bookmark_provider.dart';
 import '../providers/theme_provider.dart';
+import '../services/api_service.dart';
 
 class RecipeScreen extends StatefulWidget {
   final List<dynamic> recipes;
@@ -100,24 +102,38 @@ class _RecipeScreenState extends State<RecipeScreen> {
                 final recipe = filteredRecipes[index];
                 return Card(
                   color: backgroundColor,
-                  elevation: 2,
                   shape: RoundedRectangleBorder(
-                    side: BorderSide(color: borderColor),
+                    side: BorderSide(color: isDark ? Colors.white : Colors.black),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   child: ListTile(
-                    title: Text(
-                      recipe['title'] ?? 'Unnamed Recipe',
-                      style: TextStyle(color: textColor),
+                    title: Text(recipe['title'] ?? 'Unnamed Recipe', style: TextStyle(color: textColor)),
+                    subtitle: Text('${recipe['usedIngredientCount']} ingredients used', style: TextStyle(color: hintTextColor)),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Consumer<BookmarkProvider>(
+                          builder: (_, provider, __) {
+                            final isBookmarked = provider.isBookmarked(recipe['id']);
+                            return IconButton(
+                              icon: Icon(
+                                isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                                color: isBookmarked ? isDark? Colors.white : Colors.black : textColor
+                              ),
+                              onPressed: () async {
+                                provider.toggleBookmark(recipe);
+                                await ApiService.toggleBookmark(recipe);
+                              },
+                            );
+                          },
+                        ),
+                        Icon(Icons.open_in_new, color: textColor),
+                      ],
                     ),
-                    subtitle: Text(
-                      '${recipe['usedIngredientCount']} ingredients used',
-                      style: TextStyle(color: hintTextColor),
-                    ),
-                    trailing: Icon(Icons.arrow_forward_ios, color: textColor, size: 16),
                     onTap: () => launchRecipe(recipe['sourceUrl'] ?? ''),
                   ),
+
                 );
               },
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../providers/bookmark_provider.dart';
 import '../services/api_service.dart';
 import '../services/gemini_service.dart';
 import 'package:provider/provider.dart';
@@ -42,27 +43,32 @@ class _AiChatScreenState extends State<AiChatScreen> {
     });
 
     final userData = await fetchUserData();
+    final bookmarkedRecipes =
+        Provider.of<BookmarkProvider>(context, listen: false).bookmarkedRecipes;
 
     final fullPrompt = """
-    You are a helpful kitchen assistant. Use the data below to guide your responses.
+  You are a helpful kitchen assistant. Use the data below to guide your responses.
 
-    Active Ingredients:
-    ${userData['active'].map((item) => "- ${item['name']} (${item['quantity']})").join('\n')}
+  Active Ingredients:
+  ${userData['active'].map((item) => "- ${item['name']} (${item['quantity']})").join('\n')}
 
-    Grocery List:
-    ${userData['grocery'].map((item) => "- ${item.name}").join('\n')}
+  Grocery List:
+  ${userData['grocery'].map((item) => "- ${item.name}").join('\n')}
 
-    Used Items:
-    ${userData['used'].map((item) => "- ${item['name']}").join('\n')}
+  Used Items:
+  ${userData['used'].map((item) => "- ${item['name']}").join('\n')}
 
-    Wasted Items:
-    ${userData['wasted'].map((item) => "- ${item['name']}").join('\n')}
+  Wasted Items:
+  ${userData['wasted'].map((item) => "- ${item['name']}").join('\n')}
 
-    User question: $userMessage
+  Bookmarked Recipes:
+  ${bookmarkedRecipes.map((recipe) => "- ${recipe['title']}").join('\n')}
 
-    Respond helpfully using the above data.
-    Do not bold the titles or use any special formatting.
-    """;
+  User question: $userMessage
+
+  Respond helpfully using the above data.
+  Do not bold the titles or use any special formatting.
+  """;
 
     final reply = await GeminiService.askGemini(fullPrompt);
 
@@ -71,7 +77,6 @@ class _AiChatScreenState extends State<AiChatScreen> {
       isLoading = false;
     });
   }
-
 
   Widget buildMessage(Map<String, String> message) {
     final isUser = message['role'] == 'user';
@@ -101,13 +106,12 @@ class _AiChatScreenState extends State<AiChatScreen> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     chatProvider = Provider.of<ChatProvider>(context);
     final messages = chatProvider.messages;
     return Scaffold(
-      appBar: AppBar(title: const Text("ScanIt AI")),
+      appBar: AppBar(title: const Text("Ask Assistant")),
       body: Column(
         children: [
           Expanded(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../screens/ai_chat_screen.dart';
+import '../screens/bookmarked_recipes_screen.dart';
 import '../screens/login_screen.dart';
 import '../screens/profile_screen.dart';
 import '../screens/used_wasted_screen.dart';
@@ -28,7 +29,6 @@ class MainScaffold extends StatelessWidget {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: isDark ? Colors.black : Colors.white,
-
       appBar: AppBar(
         backgroundColor: isDark ? Colors.black : Colors.white,
         elevation: 0,
@@ -42,7 +42,6 @@ class MainScaffold extends StatelessWidget {
           ),
         ),
       ),
-
       drawer: Drawer(
         backgroundColor: isDark ? Colors.black : Colors.white,
         child: ListView(
@@ -65,8 +64,11 @@ class MainScaffold extends StatelessWidget {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.history, color: isDark ? Colors.white : Colors.black),
-              title: Text("View History", style: TextStyle(color: isDark ? Colors.white : Colors.black)),
+              leading: Icon(Icons.history,
+                  color: isDark ? Colors.white : Colors.black),
+              title: Text("View History",
+                  style:
+                      TextStyle(color: isDark ? Colors.white : Colors.black)),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -77,8 +79,11 @@ class MainScaffold extends StatelessWidget {
             ),
             Consumer<ThemeProvider>(
               builder: (context, themeProvider, _) => SwitchListTile(
-                secondary: Icon(Icons.brightness_6, color: isDark ? Colors.white : Colors.black),
-                title: Text("Dark Theme", style: TextStyle(color: isDark ? Colors.white : Colors.black)),
+                secondary: Icon(Icons.brightness_6,
+                    color: isDark ? Colors.white : Colors.black),
+                title: Text("Dark Theme",
+                    style:
+                        TextStyle(color: isDark ? Colors.white : Colors.black)),
                 value: themeProvider.isDarkMode,
                 onChanged: (val) {
                   Navigator.pop(context);
@@ -87,15 +92,35 @@ class MainScaffold extends StatelessWidget {
               ),
             ),
             ListTile(
-              leading: Icon(Icons.person, color: isDark ? Colors.white : Colors.black),
-              title: Text("Profile", style: TextStyle(color: isDark ? Colors.white : Colors.black)),
+              leading: Icon(Icons.bookmarks,
+                  color: isDark ? Colors.white : Colors.black),
+              title: Text('Bookmarked Recipes',
+                  style:
+                      TextStyle(color: isDark ? Colors.white : Colors.black)),
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfileScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const BookmarkedRecipesScreen()));
               },
             ),
             ListTile(
-              leading: Icon(Icons.logout, color: isDark ? Colors.white : Colors.black),
-              title: Text("Logout", style: TextStyle(color: isDark ? Colors.white : Colors.black)),
+              leading: Icon(Icons.person,
+                  color: isDark ? Colors.white : Colors.black),
+              title: Text("Profile",
+                  style:
+                      TextStyle(color: isDark ? Colors.white : Colors.black)),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const ProfileScreen()));
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.logout,
+                  color: isDark ? Colors.white : Colors.black),
+              title: Text("Logout",
+                  style:
+                      TextStyle(color: isDark ? Colors.white : Colors.black)),
               onTap: () async {
                 await ApiService.logout();
                 Navigator.pushAndRemoveUntil(
@@ -108,11 +133,8 @@ class MainScaffold extends StatelessWidget {
           ],
         ),
       ),
-
       body: body,
-
       bottomNavigationBar: bottomNavigation,
-
       floatingActionButton: FloatingActionButton(
         backgroundColor: isDark ? Colors.white : Colors.black,
         foregroundColor: isDark ? Colors.black : Colors.white,

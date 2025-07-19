@@ -418,6 +418,39 @@ class ApiService {
     return jsonDecode(response.body);
   }
 
+  static Future<void> toggleBookmark(dynamic recipe) async {
+    final token = await getToken();
+    final userId = await getUserId();
+
+    final uri = Uri.parse('$baseUrl/api/recipes/bookmark');
+    await http.post(uri,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        'userId': userId,
+        'recipeId': recipe['id'],
+        'recipeData': recipe,
+      }),
+    );
+  }
+
+  static Future<List<dynamic>> fetchBookmarkedRecipes() async {
+    final token = await getToken();
+    final userId = await getUserId();
+
+    final uri = Uri.parse('$baseUrl/api/recipes/bookmarked/$userId');
+
+    final response = await http.get(uri, headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+
+    final data = jsonDecode(response.body);
+    return data['bookmarks']?.map((e) => e['recipeData'])?.toList() ?? [];
+  }
+
 
   static Future<void> logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
