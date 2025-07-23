@@ -26,7 +26,7 @@ router.post("/register", async (req, res) => {
     { expiresIn: "7d" }
   );
 
-  res.status(201).json({ token });
+  res.status(201).json({ success: true, token });
 });
 
 router.post("/login", async (req, res) => {

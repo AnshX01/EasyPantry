@@ -1,6 +1,6 @@
-# 🧠 ScanIt – Minimal & Smart Grocery Tracker
+# 🧠 EasyPantry – Minimal & Smart Grocery Tracker
 
-ScanIt is a **Flutter-based** mobile and web application that helps users track pantry items, monitor expiry dates, reduce food waste, and manage grocery refills. It features a **clean monotone UI**, secure user authentication, usage stats, and smart suggestions – all backed by a **Node.js + MongoDB backend**.
+EasyPantry is a **Flutter-based** mobile and web application that helps users track pantry items, monitor expiry dates, reduce food waste, and manage grocery refills. It features a **clean monotone UI**, secure user authentication, usage stats, and smart suggestions – all backed by a **Node.js + MongoDB backend**.
 
 ---
 

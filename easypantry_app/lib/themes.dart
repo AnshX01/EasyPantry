@@ -27,9 +27,9 @@ final ThemeData darkTheme = ThemeData(
     bodyColor: Colors.white,
     displayColor: Colors.white,
   ),
-  switchTheme: SwitchThemeData(
-    thumbColor: MaterialStatePropertyAll(Colors.white),
-    trackColor: MaterialStatePropertyAll(Color(0xFF333333)),
+  switchTheme: const SwitchThemeData(
+    thumbColor: WidgetStatePropertyAll(Colors.white),
+    trackColor: WidgetStatePropertyAll(Color(0xFF333333)),
   ),
 );
 
@@ -60,7 +60,7 @@ final ThemeData lightTheme = ThemeData(
     displayColor: Colors.black,
   ),
   switchTheme: const SwitchThemeData(
-    thumbColor: MaterialStatePropertyAll(Colors.black),
-    trackColor: MaterialStatePropertyAll(Color(0xFFE0E0E0)),
+    thumbColor: WidgetStatePropertyAll(Colors.black),
+    trackColor: WidgetStatePropertyAll(Color(0xFFE0E0E0)),
   ),
 );

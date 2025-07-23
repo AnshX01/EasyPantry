@@ -112,39 +112,51 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
   }
 
   void showAddDialog() {
+    final isDark = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
+    final textColor = isDark ? Colors.white : Colors.black;
     nameController.clear();
     quantityController.clear();
     unitController.clear();
-    final isDark = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
+    
 
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: isDark ? Colors.black : Colors.white,
-        titleTextStyle: TextStyle(
-          color: isDark ? Colors.white : Colors.black,
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
-        title: const Text("Add Grocery Item"),
+        title:  Text("Add Grocery Item",style: TextStyle(color: textColor)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: nameController,
-              decoration: const InputDecoration(labelText: 'Item name'),
-              style: TextStyle(color: isDark ? Colors.white : Colors.black),
+              style: TextStyle(color: textColor),
+              decoration: InputDecoration(
+                labelText: "Item Name",
+                labelStyle: TextStyle(color: textColor),
+                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: textColor.withOpacity(0.5))),
+                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: textColor)),
+              ),
             ),
+            const SizedBox(height: 10),
             TextField(
               controller: quantityController,
-              decoration: const InputDecoration(labelText: 'Quantity'),
               keyboardType: TextInputType.number,
-              style: TextStyle(color: isDark ? Colors.white : Colors.black),
+              style: TextStyle(color: textColor),
+              decoration: InputDecoration(
+                labelText: "Quantity",
+                labelStyle: TextStyle(color: textColor),
+                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: textColor.withOpacity(0.5))),
+                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: textColor)),
+              ),
             ),
+            const SizedBox(height: 10),
             TextField(
               controller: unitController,
-              decoration: const InputDecoration(labelText: 'Unit'),
-              style: TextStyle(color: isDark ? Colors.white : Colors.black),
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(labelText: 'Unit',
+              enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: textColor.withOpacity(0.5))),
+                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: textColor)),
+                labelStyle: TextStyle(color: textColor),),
             ),
           ],
         ),
@@ -153,12 +165,16 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
             onPressed: () => Navigator.pop(context),
             child: Text("Cancel", style: TextStyle(color: isDark ? Colors.white : Colors.black)),
           ),
-          TextButton(
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: textColor,
+              foregroundColor: isDark ? Colors.black : Colors.white,
+            ),
             onPressed: () {
               Navigator.pop(context);
               addItem();
             },
-            child: Text("Add", style: TextStyle(color: isDark ? Colors.white : Colors.black)),
+            child: Text("Add"),
           ),
         ],
       ),

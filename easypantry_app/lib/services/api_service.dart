@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/grocery_item.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://localhost:3000';
+  static const String baseUrl = 'https://easypantry.onrender.com';
 
   static Future<Map<String, dynamic>> loginUser(
       String email, String password) async {

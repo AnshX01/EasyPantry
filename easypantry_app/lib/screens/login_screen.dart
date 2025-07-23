@@ -37,9 +37,9 @@ class _LoginScreenState extends State<LoginScreen> {
       await prefs.setString('user_email', decodedToken['email']);
 
       if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
+      Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => const HomeScreen()),
+        (route) => false,
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

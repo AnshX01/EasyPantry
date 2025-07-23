@@ -23,20 +23,24 @@ if (flutterVersionName == null) {
     flutterVersionName = "1.0"
 }
 
+dependencies{
+      coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.1.4"
+}
 android {
     namespace = "com.example.scanit_app"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.scanit_app"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 35
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        coreLibraryDesugaringEnabled true
     }
 
     kotlinOptions {
