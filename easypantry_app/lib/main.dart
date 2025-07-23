@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:scanit_app/providers/bookmark_provider.dart';
 import 'providers/chat_provider.dart';
 import 'services/notification_service.dart';
 import 'screens/splash_screen.dart';
 import 'package:provider/provider.dart';
 import 'providers/theme_provider.dart';
 import 'themes.dart';
+import 'providers/bookmark_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
