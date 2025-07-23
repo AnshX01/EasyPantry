@@ -34,16 +34,18 @@ class _RecipeScreenState extends State<RecipeScreen> {
     });
   }
 
-  void launchRecipe(String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not launch recipe URL')),
-      );
-    }
+  void launchRecipe(Map<String, dynamic> recipe) async {
+  final recipeId = recipe['id'];
+  final url = await ApiService.fetchRecipeUrl(recipeId);
+
+  if (url != null && await canLaunchUrl(Uri.parse(url))) {
+    await launchUrl(Uri.parse(url));
+  } else {
+    print('Could not launch recipe URL for ID: $recipeId');
   }
+}
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -103,24 +105,35 @@ class _RecipeScreenState extends State<RecipeScreen> {
                 return Card(
                   color: backgroundColor,
                   shape: RoundedRectangleBorder(
-                    side: BorderSide(color: isDark ? Colors.white : Colors.black),
+                    side:
+                        BorderSide(color: isDark ? Colors.white : Colors.black),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   child: ListTile(
-                    title: Text(recipe['title'] ?? 'Unnamed Recipe', style: TextStyle(color: textColor)),
-                    subtitle: Text('${recipe['usedIngredientCount']} ingredients used', style: TextStyle(color: hintTextColor)),
+                    title: Text(recipe['title'] ?? 'Unnamed Recipe',
+                        style: TextStyle(color: textColor)),
+                    subtitle: Text(
+                        '${recipe['usedIngredientCount']} ingredients used',
+                        style: TextStyle(color: hintTextColor)),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Consumer<BookmarkProvider>(
                           builder: (_, provider, __) {
-                            final isBookmarked = provider.isBookmarked(recipe['id']);
+                            final isBookmarked =
+                                provider.isBookmarked(recipe['id']);
                             return IconButton(
                               icon: Icon(
-                                isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-                                color: isBookmarked ? isDark? Colors.white : Colors.black : textColor
-                              ),
+                                  isBookmarked
+                                      ? Icons.bookmark
+                                      : Icons.bookmark_border,
+                                  color: isBookmarked
+                                      ? isDark
+                                          ? Colors.white
+                                          : Colors.black
+                                      : textColor),
                               onPressed: () async {
                                 provider.toggleBookmark(recipe);
                                 await ApiService.toggleBookmark(recipe);
@@ -131,13 +144,11 @@ class _RecipeScreenState extends State<RecipeScreen> {
                         Icon(Icons.open_in_new, color: textColor),
                       ],
                     ),
-                    onTap: () => launchRecipe(recipe['sourceUrl'] ?? ''),
+                    onTap: () =>launchRecipe(recipe ?? ''),
                   ),
-
                 );
               },
             ),
     );
   }
-
 }

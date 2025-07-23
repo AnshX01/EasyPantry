@@ -68,4 +68,19 @@ router.post('/bookmark', authenticateToken, async (req, res) => {
   }
 });
 
+router.get('/info/:id', authenticateToken, async (req, res) => {
+  const recipeId = req.params.id;
+
+  try {
+    const response = await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/information`, {
+      params: { apiKey: process.env.SPOONACULAR_API_KEY },
+    });
+
+    res.json({ sourceUrl: response.data.sourceUrl });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch recipe info' });
+  }
+});
+
+
 module.exports = router;

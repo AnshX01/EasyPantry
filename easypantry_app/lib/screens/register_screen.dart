@@ -75,7 +75,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  "Register on ScanIt",
+                  "Register on EasyPantry",
                   style: TextStyle(fontSize: 28, color: textColor, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),

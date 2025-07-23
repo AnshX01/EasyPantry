@@ -66,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  "Login to ScanIt",
+                  "Login to EasyPantry",
                   style: TextStyle(fontSize: 28, color: textColor, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),

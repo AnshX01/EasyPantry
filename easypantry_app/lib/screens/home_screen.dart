@@ -377,7 +377,7 @@ void showItemDialog({required bool isEdit, String? itemId}) {
     final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
 
     return MainScaffold(
-      title: "ScanIt",
+      title: "EasyPantry",
       body: pages[_selectedIndex],
       bottomNavigation: BottomNavigationBar(
         backgroundColor: isDark ? Colors.black : Colors.white,

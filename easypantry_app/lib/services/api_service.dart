@@ -263,6 +263,24 @@ class ApiService {
   }
 
 
+  static Future<String?> fetchRecipeUrl(int recipeId) async {
+    final token = await getToken();
+    final uri = Uri.parse('$baseUrl/api/recipes/info/$recipeId');
+
+    final response = await http.get(uri, headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data['sourceUrl'];
+    } else {
+      print('Failed to fetch recipe info: ${response.statusCode}');
+      return null;
+    }
+  }
+
 
 
 
