@@ -33,13 +33,23 @@ class MainScaffold extends StatelessWidget {
         backgroundColor: isDark ? Colors.black : Colors.white,
         elevation: 0,
         iconTheme: IconThemeData(color: isDark ? Colors.white : Colors.black),
-        title: Text(
+        title: Row(
+          children: [
+            Image.asset( isDark?
+          'assets/icons/app_icon1.png' : 'assets/icons/app_icon.png',
+          width: 40,
+          height: 40,
+        ),
+        const SizedBox(width: 8),
+        Text(
           title,
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
             color: isDark ? Colors.white : Colors.black,
           ),
+        ),
+          ],
         ),
       ),
       drawer: Drawer(
