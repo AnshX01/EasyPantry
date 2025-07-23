@@ -1,14 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../services/api_service.dart'; // assumes you have this
+import '../services/api_service.dart';
 
 class BookmarkProvider with ChangeNotifier {
   List<Map<String, dynamic>> _bookmarkedRecipes = [];
 
   List<Map<String, dynamic>> get bookmarkedRecipes => _bookmarkedRecipes;
 
-  // Load from backend instead of SharedPreferences
   Future<void> loadBookmarks() async {
     try {
       final bookmarks = await ApiService.fetchBookmarkedRecipes();

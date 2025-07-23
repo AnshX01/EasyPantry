@@ -27,6 +27,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       passwordController.text,
     );
     setState(() => isLoading = false);
+    print('Parsed JSON: $response');
+
 
     if (response['success'] == true) {
       ScaffoldMessenger.of(context).showSnackBar(
