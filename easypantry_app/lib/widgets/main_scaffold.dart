@@ -59,14 +59,14 @@ class MainScaffold extends StatelessWidget {
           children: [
             DrawerHeader(
               decoration: BoxDecoration(
-                color: isDark ? Colors.grey[900] : Colors.grey[200],
+                color: isDark ? Colors.white : Colors.black,
               ),
               child: Align(
                 alignment: Alignment.bottomLeft,
                 child: Text(
                   'Welcome back!',
                   style: TextStyle(
-                    color: isDark ? Colors.white : Colors.black,
+                    color: isDark ? Colors.black : Colors.white,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),

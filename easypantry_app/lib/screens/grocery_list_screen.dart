@@ -152,7 +152,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
             const SizedBox(height: 10),
             TextField(
               controller: unitController,
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.text,
               decoration: InputDecoration(labelText: 'Unit',
               enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: textColor.withOpacity(0.5))),
                 focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: textColor)),
@@ -171,8 +171,9 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
               foregroundColor: isDark ? Colors.black : Colors.white,
             ),
             onPressed: () {
-              Navigator.pop(context);
+              if (nameController.text.isEmpty || unitController.text.isEmpty) return;
               addItem();
+              Navigator.pop(context);
             },
             child: Text("Add"),
           ),
