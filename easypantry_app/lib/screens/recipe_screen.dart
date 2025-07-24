@@ -21,6 +21,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
   @override
   void initState() {
     super.initState();
+    Provider.of<BookmarkProvider>(context, listen: false).loadBookmarks();
     filteredRecipes = List.from(widget.recipes);
   }
 
@@ -35,17 +36,21 @@ class _RecipeScreenState extends State<RecipeScreen> {
   }
 
   void launchRecipe(Map<String, dynamic> recipe) async {
-  final recipeId = recipe['id'];
-  final url = await ApiService.fetchRecipeUrl(recipeId);
-
-  if (url != null && await canLaunchUrl(Uri.parse(url))) {
-    await launchUrl(Uri.parse(url));
-  } else {
-    print('Could not launch recipe URL for ID: $recipeId');
+    final recipeId = recipe['id'];
+    if (recipeId == null) return;
+    
+    final url = await ApiService.fetchRecipeUrl(recipeId);
+    if (url != null) {
+      final uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        print('Could not launch URL: $url');
+      }
+    } else {
+      print('Could not fetch recipe URL for ID: $recipeId');
+    }
   }
-}
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +59,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
     final textColor = isDark ? Colors.white : Colors.black;
     final hintTextColor = isDark ? Colors.white54 : Colors.black54;
     final borderColor = isDark ? Colors.white24 : Colors.black26;
+    final primaryColor = Theme.of(context).primaryColor;
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -101,12 +107,12 @@ class _RecipeScreenState extends State<RecipeScreen> {
           : ListView.builder(
               itemCount: filteredRecipes.length,
               itemBuilder: (context, index) {
-                final recipe = filteredRecipes[index];
+                final recipe = filteredRecipes[index] as Map<String, dynamic>;
+                
                 return Card(
                   color: backgroundColor,
                   shape: RoundedRectangleBorder(
-                    side:
-                        BorderSide(color: isDark ? Colors.white : Colors.black),
+                    side: BorderSide(color: isDark ? Colors.white24 : Colors.black26),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   margin:
@@ -126,25 +132,24 @@ class _RecipeScreenState extends State<RecipeScreen> {
                                 provider.isBookmarked(recipe['id']);
                             return IconButton(
                               icon: Icon(
-                                  isBookmarked
-                                      ? Icons.bookmark
-                                      : Icons.bookmark_border,
-                                  color: isBookmarked
-                                      ? isDark
-                                          ? Colors.white
-                                          : Colors.black
-                                      : textColor),
-                              onPressed: () async {
+                                isBookmarked
+                                    ? Icons.bookmark
+                                    : Icons.bookmark_border,
+                                color: isBookmarked ? primaryColor : textColor,
+                              ),
+                              onPressed: () {
                                 provider.toggleBookmark(recipe);
-                                await ApiService.toggleBookmark(recipe);
                               },
                             );
                           },
                         ),
-                        Icon(Icons.open_in_new, color: textColor),
+                        IconButton(
+                          icon: Icon(Icons.open_in_new, color: textColor),
+                          onPressed: () => launchRecipe(recipe),
+                        ),
                       ],
                     ),
-                    onTap: () =>launchRecipe(recipe ?? ''),
+                    onTap: () => launchRecipe(recipe),
                   ),
                 );
               },
